@@ -182,7 +182,7 @@ def get_parser():
     # optimizer
     parser.add_argument('--epochs', default=200, type=int, help='number of epochs')
     parser.add_argument('--batch-size', default=256, type=int, help='batch size (default: 256)')
-    parser.add_argument('--lr', default=0.05, type=float, help='initial learning rate (default: 0.05)')
+    parser.add_argument('--lr', default=0.08, type=float, help='initial learning rate (default: 0.05)')
     parser.add_argument('--lrdrop', default=150, type=int, help='multiply LR by 0.1 every (default: 150 epochs)')
     parser.add_argument('--wd', default=-5, type=float, help='weight decay pow (default: (-5)')
     parser.add_argument('--dtype', default='f64',choices=['f64','f32'], type=str, help='SK-algo dtype (default: f64)')
