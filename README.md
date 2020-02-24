@@ -1,6 +1,6 @@
 # Self-labelling via simultaneous clustering and representation learning
 
-Also checkout our [blogpost](http://www.robots.ox.ac.uk/~vgg/blogs/elf-labelling-via-simultaneous-clustering-and-representation-learning.html).
+Checkout our [blogpost](http://www.robots.ox.ac.uk/~vgg/blogs/elf-labelling-via-simultaneous-clustering-and-representation-learning.html) for a quick non-technical overview and an interactive visualization of our clusters.
 
 ## Self-Label
 
