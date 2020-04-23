@@ -1,3 +1,7 @@
+"""standardized linear probing from:
+https://github.com/yukimasano/linear-probes 
+"""
+
 import time
 import os
 from functools import reduce

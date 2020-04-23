@@ -1,5 +1,7 @@
 # Self-labelling via simultaneous clustering and representation learning
 
+Checkout our [blogpost](http://www.robots.ox.ac.uk/~vgg/blog/self-labelling-via-simultaneous-clustering-and-representation-learning.html) for a quick non-technical overview and an interactive visualization of our clusters.
+
 ## Self-Label
 
 This code is the official implementation of the ICLR 2020 paper [Self-labelling via simultaneous clustering and representation learning](https://openreview.net/forum?id=Hyx-jyBFPr). 
