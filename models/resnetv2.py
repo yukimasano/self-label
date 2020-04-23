@@ -1,4 +1,6 @@
 """ Pre-activation ResNet in PyTorch.
+also called ResNet v2.
+
 adapted from https://github.com/kuangliu/pytorch-cifar/edit/master/models/preact_resnet.py
 Reference:
 [1] Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun
@@ -9,7 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import os
 
-__all__ = ['resnet']
+__all__ = ['resnetv2']
 
 class PreActBottleneck(nn.Module):
     '''Pre-activation version of the original Bottleneck module.'''
@@ -86,14 +88,14 @@ class PreActResNet(nn.Module):
 def PreActResNet50(num_classes):
     return PreActResNet(PreActBottleneck, [3,4,6,3],num_classes)
 
-def resnet(nlayers=50, num_classes=[1000], expansion=1):
+def resnetv2(nlayers=50, num_classes=[1000], expansion=1):
     if nlayers == 50:
         return PreActResNet(PreActBottleneck, [3,4,6,3], num_classes, expansion=4*expansion)
     else:
         raise NotImplementedError
 
 def test():
-    net = resnet(nlayers=50, num_classes=[3000] * 5, expansion=4)
+    net = resnetv2(nlayers=50, num_classes=[3000] * 5, expansion=4)
     os.environ["CUDA_VISIBLE_DEVICES"] = "3"
     print('done')
 

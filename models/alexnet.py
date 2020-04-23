@@ -11,7 +11,7 @@ CFG = {
 }
 
 class AlexNet(nn.Module):
-    def __init__(self, features, num_classes,init=True):
+    def __init__(self, features, num_classes, init=True):
         super(AlexNet, self).__init__()
         self.features = features
         self.classifier = nn.Sequential(nn.Dropout(0.5),
@@ -21,6 +21,7 @@ class AlexNet(nn.Module):
                             nn.Linear(4096, 4096),
                             nn.ReLU(inplace=True))
         self.headcount = len(num_classes)
+        self.return_features = False
         if len(num_classes) == 1:
             self.top_layer = nn.Linear(4096, num_classes[0])
         else:
@@ -33,6 +34,8 @@ class AlexNet(nn.Module):
     def forward(self, x):
         x = self.features(x)
         x = x.view(x.size(0), 256 * 6 * 6)
+        if self.return_features:
+            return x
         x = self.classifier(x)
         if self.headcount == 1:
             if self.top_layer: # this way headcount can act as switch.

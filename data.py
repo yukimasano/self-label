@@ -80,14 +80,17 @@ def get_aug_dataloader(image_dir, is_validation=False,
 
 def return_model_loader(args):
     outs = [args.ncl]*args.hc
+    assert args.arch in ['alexnet','resnetv2','resnet']
     if args.arch == 'alexnet':
         model = models.__dict__[args.arch](num_classes=outs)
-    else:  # resnet
+    elif args.arch == 'resnetv2':  # resnet
         model = models.__dict__[args.arch](nlayers=50, num_classes=outs, expansion=1)
-        train_loader = get_aug_dataloader(image_dir=args.imagenet_path,
-                                          batch_size=args.batch_size,
-                                          num_workers=args.workers,
-                                          augs=int(args.augs))
+    else:
+        torchvision.models.__dict__[args.arch](num_classes=outs)
+    train_loader = get_aug_dataloader(image_dir=args.imagenet_path,
+                                      batch_size=args.batch_size,
+                                      num_workers=args.workers,
+                                      augs=int(args.augs))
 
     return model, train_loader
 

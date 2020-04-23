@@ -4,7 +4,7 @@ device="0,1,2,3" # we need around 46GB of GPU memory for storing resnet activati
 DIR=/tmp/ILSVRC12
 
 # the network
-ARCH="presnet"
+ARCH="resnetv2"
 hc=10
 ncl=3000
 
