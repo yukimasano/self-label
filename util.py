@@ -297,3 +297,24 @@ def search_set_bn_eval(model,toeval):
             else:
                 m.train()
         search_set_bn_eval(m, toeval)
+
+def prepmodel(model, modelpath):
+    dat = torch.load(modelpath, map_location=lambda storage, loc: storage)  # ['model']
+    from collections import OrderedDict
+    new_state_dict = OrderedDict()
+    for k, v in dat.items():
+        name = k.replace('module.', '')  # remove `module.`
+        new_state_dict[name] = v
+    model.load_state_dict(new_state_dict)
+    del dat
+    for param in model.features.parameters():
+        param.requires_grad = False
+
+    if model.headcount > 1:
+        for i in range(model.headcount):
+            setattr(model, "top_layer%d" % i, None)
+
+    model.top_layer = nn.Sequential(nn.Linear(2048, 1000))
+    model.headcount = 1
+    model.withfeature = False
+    model.return_feature_only = False

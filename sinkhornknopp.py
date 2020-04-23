@@ -3,7 +3,7 @@ import torch.nn as nn
 import time
 import numpy as np
 
-from util import  py_softmax
+from util import  py_softmax,MovingAverage
 from multigpu import gpu_mul_Ax, gpu_mul_xA, aggreg_multi_gpu, gpu_mul_AB
 
 def cpu_sk(self):
@@ -19,8 +19,12 @@ def cpu_sk(self):
     else:
         self.PS_pre = np.zeros((N, self.presize), dtype=self.dtype)
     now = time.time()
+    l_dl = len(self.pseudo_loader)
+    time.time()
+    batch_time = MovingAverage(intertia=0.9)
     for batch_idx, (data, _, _selected) in enumerate(self.pseudo_loader):
         data = data.to(self.dev)
+        mass = data.size(0)
         if self.hc == 1:
             p = nn.functional.softmax(self.model(data), 1)
             self.PS[_selected, :] = p.detach().cpu().numpy().astype(self.dtype)
@@ -28,6 +32,11 @@ def cpu_sk(self):
             self.model.headcount = 1
             p = self.model(data)
             self.PS_pre[_selected, :] = p.detach().cpu().numpy().astype(self.dtype)
+        batch_time.update(time.time() - now)
+        now = time.time()
+        if batch_idx % 50 == 0:
+            print(f"Aggregating batch {batch_idx:03}/{l_dl}, speed: {mass / batch_time.avg:04.1f}Hz",
+                  end='\r', flush=True)
     print("Aggreg of outputs  took {0:.2f} min".format((time.time() - now) / 60.), flush=True)
 
     # 2. solve label assignment via sinkhorn-knopp:
@@ -65,6 +74,7 @@ def gpu_sk(self):
     if self.hc == 1:
         self.PS, indices = aggreg_multi_gpu(self.model, self.pseudo_loader,
                                             hc=self.hc, dim=self.outs[0], TYPE=self.dtype)
+
     else:
         try: # just in case stuff
             del self.PS_pre
@@ -126,8 +136,6 @@ def optimize_L_sk(self, nh=0):
     newL = torch.LongTensor(argmaxes)
     self.L[nh] = newL.to(self.dev)
     print('opt took {0:.2f}min, {1:4d}iters'.format(((time.time() - tt) / 60.), _counter), flush=True)
-
-
 
 def optimize_L_sk_multi(self, nh=0):
     """ optimizes label assignment via Sinkhorn-Knopp.
