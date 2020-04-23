@@ -22,6 +22,7 @@ def cpu_sk(self):
     l_dl = len(self.pseudo_loader)
     time.time()
     batch_time = MovingAverage(intertia=0.9)
+    self.model.headcount = 1
     for batch_idx, (data, _, _selected) in enumerate(self.pseudo_loader):
         data = data.to(self.dev)
         mass = data.size(0)
@@ -29,7 +30,6 @@ def cpu_sk(self):
             p = nn.functional.softmax(self.model(data), 1)
             self.PS[_selected, :] = p.detach().cpu().numpy().astype(self.dtype)
         else:
-            self.model.headcount = 1
             p = self.model(data)
             self.PS_pre[_selected, :] = p.detach().cpu().numpy().astype(self.dtype)
         batch_time.update(time.time() - now)
@@ -37,6 +37,7 @@ def cpu_sk(self):
         if batch_idx % 50 == 0:
             print(f"Aggregating batch {batch_idx:03}/{l_dl}, speed: {mass / batch_time.avg:04.1f}Hz",
                   end='\r', flush=True)
+    self.model.headcount = self.hc
     print("Aggreg of outputs  took {0:.2f} min".format((time.time() - now) / 60.), flush=True)
 
     # 2. solve label assignment via sinkhorn-knopp:
@@ -57,7 +58,7 @@ def cpu_sk(self):
             # apply last FC layer (a matmul and adding of bias)
             self.PS = (self.PS_pre @ tl.weight.cpu().numpy().T.astype(self.dtype)
                        + tl.bias.cpu().numpy().astype(self.dtype))
-            print("matmul took %smin" % ((time.time() - time_mat) / 60.), flush=True)
+            print(f"matmul took {(time.time() - time_mat)/60:.2f}min", flush=True)
             self.PS = py_softmax(self.PS, 1)
             optimize_L_sk(self, nh=nh)
     return
