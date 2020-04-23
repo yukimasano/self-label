@@ -92,8 +92,7 @@ def return_model_loader(args, return_loader=True):
     train_loader = get_aug_dataloader(image_dir=args.imagenet_path,
                                       batch_size=args.batch_size,
                                       num_workers=args.workers,
-                                      augs=int(args.augs),
-                                      is_validation=True)
+                                      augs=int(args.augs))
 
     return model, train_loader
 

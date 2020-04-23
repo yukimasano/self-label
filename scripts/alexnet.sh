@@ -1,24 +1,23 @@
 #!/bin/bash
 # script for running alexnet learning on multiple gpus
-device="0,1,2,3" # depending on
+device="0,1,2,3"
 DIR=/tmp/ILSVRC12
 
 # the network
 ARCH="alexnet"
-hc=10
-ncl=3000
+HC=10
+NCL=3000
 
 # the training
 WORKERS=24
-bs=256
-nepochs=400
-augs=3
-paugs=3
+BS=256
+NEP=400
+AUG=3
 
 # the pseudo opt
 nopts=100
 
-folder=pseudo${ncl}_${ARCH}_bs${bs}_hc${hc}-${nepochs}_nopt${nopts}_augT${augs}_augP${paugs}
+folder=pseudo${NCL}_${ARCH}_bs${BS}_hc${HC}-${NEP}_nopt${nopts}_augT${AUG}
 
 EXP=./${folder}
 mkdir -p ${EXP}/checkpoints/L
@@ -27,13 +26,12 @@ python3 main.py \
         --device ${device} \
         --imagenet-path ${DIR} \
         --exp ${EXP} \
-        --batch-size ${bs} \
-        --augs ${augs} \
-        --paugs ${paugs} \
-        --epochs ${nepochs} \
+        --batch-size ${BS} \
+        --augs ${AUG} \
+        --epochs ${NEP} \
         --nopts ${nopts} \
-        --hc ${hc} \
+        --hc ${HC} \
         --arch ${ARCH} \
-        --ncl ${ncl} \
+        --ncl ${NCL} \
         --workers ${WORKERS} \
         --comment ${EXP}  | tee -a ${EXP}/log.txt;

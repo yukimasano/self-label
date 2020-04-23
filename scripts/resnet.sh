@@ -24,6 +24,7 @@ EXP=./${folder}
 mkdir -p ${EXP}/checkpoints/L
 
 python3 main.py \
+        --cpu \
         --device ${device} \
         --imagenet-path ${DIR} \
         --exp ${EXP} \
