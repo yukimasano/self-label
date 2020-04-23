@@ -17,5 +17,5 @@ python3 eval_resnet.py \
             --modelpath=${CKPT}\
             --datadir=${DIR}\
             --ckpt-dir=${EXP}/checkpoints-eval \
-            --comment=${EXP}-evallinear \
+            --name=${EXP}-evallinear \
             --device=${DEVICE}

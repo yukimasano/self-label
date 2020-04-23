@@ -189,7 +189,7 @@ def get_parser():
     parser.add_argument('--ckpt-dir', default='.test', metavar='DIR', help='path to result dirs')
     parser.add_argument('--datadir', default='/home/ubuntu/data/imagenet', type=str,help='')
     parser.add_argument('--modelpath', default='./checkpoint999.pth', type=str,help='')
-    parser.add_argument('--comment', default='test', type=str, help='comment for tensorboardX')
+    parser.add_argument('--name', default='test', type=str, help='comment for tensorboardX')
     parser.add_argument('--evaluate', dest='evaluate', action='store_true', help='evaluate only')
     return parser
 
@@ -202,7 +202,7 @@ if __name__ == "__main__":
     model = data.return_model_loader(args, return_loader=False)
     util.prepmodel(model, args.modelpath)
 
-    name = "%s" % args.comment.replace('/', '_')
+    name = "%s" % args.name.replace('/', '_')
     writer = SummaryWriter('./eval/%s'%name)
     writer.add_text('args', " \n".join(['%s %s' % (arg, getattr(args, arg)) for arg in vars(args)]))
     # Setup dataset

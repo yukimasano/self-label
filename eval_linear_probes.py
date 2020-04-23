@@ -22,7 +22,7 @@ class Probes(nn.Module):
     """Linear probing container."""
     def __init__(self, trunk, probed_layers, num_classes=1000):
         super(Probes, self).__init__()
-        x = torch.zeros(2,3,int(args.crop_size),int(args.crop_size))
+        x = torch.zeros(2,3,224,224)
         num_classes = num_classes
         n_lin = 9200
         cnvs = [
@@ -87,8 +87,7 @@ def model_with_probes(model_path=None,which='Imagenet'):
         nc = 1000
     elif which == 'Places':
         nc = 205
-    state_dict = torch.load(model_path)['state_dict']
-    hc = sum(['top_layer' in q for q in state_dict.keys()]) /2
+    state_dict = torch.load(model_path) # ['state_dict']
     ncls = []
     for q in (state_dict.keys()):
         if 'top_layer' in q:
@@ -96,7 +95,7 @@ def model_with_probes(model_path=None,which='Imagenet'):
                 ncl = state_dict[q].shape[0]
                 ncls.append(ncl)
     outs = ncls
-    model = models.__dict__[args.arch](out=outs)
+    model = models.__dict__[args.arch](num_classes=outs)
     model.load_state_dict(state_dict)
     layers = [1, 4, 7, 9, 11]  # because BN.
     util.search_absorb_bn(model)
@@ -264,7 +263,7 @@ class LinearProbesOptimizer():
 def get_parser():
     parser = argparse.ArgumentParser(description='Driver')
 
-    parser.add_argument('--arch', default='alexnet', type=str, help='alexnet or alexnet_cif')
+    parser.add_argument('--arch', default='alexnet', type=str, help='alexnet resnetv2 resnetv1')
     parser.add_argument('--data', default='Imagenet', type=str, help='')
     parser.add_argument('--ckpt-dir', default='./test', metavar='DIR', help='path to checkpoints')
 
@@ -277,44 +276,31 @@ def get_parser():
     parser.add_argument('--epochs', default=36, type=int, metavar='N', help='number of epochs')
     parser.add_argument('--batch-size', default=192, type=int, metavar='N', help='batch size (default: 256)')
     parser.add_argument('--learning-rate', default=0.01, type=float, metavar='FLOAT', help='initial learning rate')
-    parser.add_argument('--bn', default='True', type=str,  help='bn')
-    parser.add_argument('--head', default='default', type=str, help='BN or dropout')
     parser.add_argument('--tencrops', dest='tencrops', action='store_false',
                         help='tencrops (on by default for alexnet)')
 
     parser.add_argument('--evaluate', dest='evaluate', action='store_true', help='evaluate only')
-    parser.add_argument('--img-size', default=256, type=int, help='imagesize (256)')
-    parser.add_argument('--crop-size', default=224, type=int, help='cropsize for CNN (224)')
-    parser.add_argument('--imagenet-path', default='/home/ubuntu/data/imagenet', type=str,
+    parser.add_argument('--datadir', default='/home/ubuntu/data/imagenet', type=str,
                         help='path to imagenet folder, where train and val are located')
-    parser.add_argument('--comment', default='alexnet-eval', type=str, help='comment for tensorboardX')
+    parser.add_argument('--name', default='eval', type=str, help='comment for tensorboardX')
     return parser
 
 
 if __name__ == "__main__":
     args = get_parser().parse_args()
-    args.tencrops = args.tencrops == 'True' or args.tencrops == 'true'
-    # args.evaluate = args.evaluate == 'True' or args.evaluate == 'true'
-    try:
-        args.device = [int(item) for item in args.device.split(',')]
-    except AttributeError:
-        args.device = [int(args.device)]
     # Setup CUDA and random seeds
-    print("have you chosen which learning rate schedule and if or not to use randomcrops???")
     print("="*60)
     print()
     util.setup_runtime(seed=2, cuda_dev_id=args.device)
 
-
     print(f"Training architecture {args.arch} on {args.data}")
     name = args.name.replace('/', '_')
-    print(name, flush=True)
     writer = SummaryWriter('./runs_LP/%s/%s' % (args.data, name))
     writer.add_text('args', " \n".join(['%s %s' % (arg, getattr(args, arg)) for arg in vars(args)]))
 
 
     model = model_with_probes(model_path=args.modelpath, which=args.data)
-    train_loader, val_loader = get_standard_data_loader_pairs(dir_path=args.imagenet_path,
+    train_loader, val_loader = get_standard_data_loader_pairs(dir_path=args.datadir,
                                                               batch_size=args.batch_size,
                                                               num_workers=args.workers,
                                                               tencrops=args.tencrops)
