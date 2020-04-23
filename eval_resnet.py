@@ -175,17 +175,15 @@ def get_parser():
     parser.add_argument('--device', nargs='+', default="3", type=str, metavar='N', help='use "0 1" for specifying')
 
     # model
-    parser.add_argument('--arch', default='cmcresnet', metavar='NAME', help='architecture to train')
-    parser.add_argument('--data', default='imagenet', metavar='NAME', help='what data')
-    parser.add_argument('--ncl', default=1000, type=int, metavar='INT', help='number of clusters')
-    parser.add_argument('--hc', default=2, type=int, metavar='INT', help='number of heads')
+    parser.add_argument('--arch', default='resnetv2', metavar='NAME', help='architecture to train')
+    parser.add_argument('--ncl', default=3000, type=int, metavar='INT', help='number of clusters')
+    parser.add_argument('--hc', default=10, type=int, metavar='INT', help='number of heads')
 
     # optimization
-    parser.add_argument('-j', '--workers', default=6, type=int, metavar='N',
-                        help='number of data loading workers (default: 6)')
-    parser.add_argument('--epochs', default=90, type=int, metavar='N', help='number of epochs')
-    parser.add_argument('--batch-size', default=192, type=int, metavar='N', help='batch size (default: 256)')
-    parser.add_argument('--learning-rate', default=0.01, type=float, metavar='FLOAT', help='initial learning rate')
+    parser.add_argument('-j', '--workers', default=8, type=int, help='number of data loading workers')
+    parser.add_argument('--epochs', default=146, type=int, help='number of epochs')
+    parser.add_argument('--batch-size', default=1024, type=int, help='batch size')
+    parser.add_argument('--learning-rate', default=0.1, type=float, metavar='FLOAT', help='initial learning rate')
 
     # other
     parser.add_argument('--ckpt-dir', default='.test', metavar='DIR', help='path to result dirs')
@@ -205,7 +203,7 @@ if __name__ == "__main__":
     util.prepmodel(model, args.modelpath)
 
     name = "%s" % args.comment.replace('/', '_')
-    writer = SummaryWriter('./RUNS/%s/%s' % (args.data, name))
+    writer = SummaryWriter('./eval/%s'%name)
     writer.add_text('args', " \n".join(['%s %s' % (arg, getattr(args, arg)) for arg in vars(args)]))
     # Setup dataset
     train_loader, val_loader = data.get_standard_data_loader_pairs(dir_path=args.datadir,
