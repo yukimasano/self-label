@@ -1,5 +1,7 @@
 # Self-labelling via simultaneous clustering and representation learning
 
+_updated code: 23rd April: bug fixes + CIFAR code + evaluation for resnet + Alexnet.
+
 Checkout our [blogpost](http://www.robots.ox.ac.uk/~vgg/blog/self-labelling-via-simultaneous-clustering-and-representation-learning.html) for a quick non-technical overview and an interactive visualization of our clusters.
 
 ## Self-Label
