@@ -96,8 +96,9 @@ optional arguments:
 
 ## Evaluation
 ### Linear Evaluation
-We provide the linear evaluation methods in this repo. Specifically, `eval_linear_probes.py` provides code to train all 5 linear probes in parallel for a AlexNet.
-`eval_resnet.py` trains the last linear layer of a pre-trained ResNet to evaluate its quality.
+We provide the linear evaluation methods in this repo. 
+Simply download the models via `. ./scripts/download_models.sh` and then either run `scripts/eval-alexnet.sh` or `scripts/eval-resnet.sh`.
+
 ### Pascal VOC
 We follow the standard evaluation protocols for self-supervised visual representation learning.
 * for Classification: we follow the PyTorch implementation of [DeepCluster](https://github.com/facebookresearch/deepcluster) with frozen BatchNorm.
@@ -131,10 +132,6 @@ m = models.alexnet(num_classes = [3000]*10)
 m.load_state_dict(d)
 
 ```
-
-## Coming soon:
-* CIFAR (mostly based on the [AET code](https://github.com/maple-research-lab/AET))
-* retraining with additional RotNet-loss
 
 ## Reference
 
