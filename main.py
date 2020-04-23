@@ -42,29 +42,25 @@ class Optimizer:
         self.model = m
         self.dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.nmodel_gpus = len(args.modeldevice)
-        self.pseudo_loader = torch.utils.data.DataLoader(t_loader.dataset) # can also be DataLoader with less aug.
+        self.pseudo_loader = t_loader # can also be DataLoader with less aug.
         self.train_loader = t_loader
         self.lamb = args.lamb # the parameter lambda in the SK algorithm
-        if args.dtype == 'f32':
-            self.dtype = torch.float32 if not args.cpu else np.float32
-        else:
-            self.dtype = torch.float64 if not args.cpu else np.float64
+        self.dtype = torch.float64 if not args.cpu else np.float64
 
         self.outs = [self.K]*args.hc
         # activations of previous to last layer to be saved if using multiple heads.
         self.presize = 4096 if args.arch == 'alexnet' else 2048
 
     def optimize_labels(self, niter):
-        if args.cpu:
-            sk.cpu_sk(self)
-        else:
+        if not args.cpu and torch.cuda.device_count() > 1:
             sk.gpu_sk(self)
+        else:
+            sk.cpu_sk(self)
 
         # save Label-assignments: optional
         # torch.save(self.L, os.path.join(self.checkpoint_dir, 'L', str(niter) + '_L.gz'))
 
         # free memory
-        data = 0
         self.PS = 0
 
     def optimize_epoch(self, optimizer, loader, epoch, validation=False):
@@ -79,7 +75,7 @@ class Optimizer:
         lr = self.lr_schedule(epoch)
         for pg in optimizer.param_groups:
             pg['lr'] = lr
-        XE = torch.nn.CrossEntropyLoss().to(self.dev)
+        XE = torch.nn.CrossEntropyLoss()
         for iter, (data, label, selected) in enumerate(loader):
             now = time.time()
             niter = epoch * len(loader) + iter
@@ -157,7 +153,6 @@ class Optimizer:
                     self.L[nh, _i] = _i % self.outs[nh]
                 self.L[nh] = np.random.permutation(self.L[nh])
             self.L = torch.LongTensor(self.L).to(self.dev)
-            util.warmup_batchnorm(self.model, self.train_loader, 'cuda:0')
 
         # Perform optmization ###############################################################
         lowest_loss = 1e9
@@ -190,7 +185,6 @@ def get_parser():
     # SK algo
     parser.add_argument('--nopts', default=100, type=int, help='number of pseudo-opts (default: 100)')
     parser.add_argument('--augs', default=3, type=int, help='augmentation level (default: 3)')
-    parser.add_argument('--paugs', default=3, type=int, help='for pseudoopt: augmentation level (default: 3)')
     parser.add_argument('--lamb', default=25, type=int, help='for pseudoopt: lambda (default:25) ')
     parser.add_argument('--cpu', default=False, action='store_true', help='use CPU variant (slow) (default: off)')
 
@@ -234,6 +228,7 @@ if __name__ == "__main__":
 
     # Setup model and train_loader
     model, train_loader = return_model_loader(args)
+    print(len(train_loader.dataset))
     model.to('cuda:0')
     if torch.cuda.device_count() > 1:
         print("Let's use", len(args.modeldevice), "GPUs for the model")
