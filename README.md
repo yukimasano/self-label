@@ -1,6 +1,6 @@
 # Self-labelling via simultaneous clustering and representation learning
 
-🆕✅🎉_updated code: 23rd April: bug fixes + CIFAR code + evaluation for resnet + Alexnet._
+🆕✅🎉 _updated code: 23rd April: bug fixes + CIFAR code + evaluation for resnet + Alexnet._
 
 Checkout our [blogpost](http://www.robots.ox.ac.uk/~vgg/blog/self-labelling-via-simultaneous-clustering-and-representation-learning.html) for a quick non-technical overview and an interactive visualization of our clusters.
 
@@ -21,6 +21,17 @@ so as to train highly competitive image representations without manual labels. O
 method achieves state of the art representation learning performance for AlexNet
 and ResNet-50 on SVHN, CIFAR-10, CIFAR-100 and ImageNet.
 
+## clusters that were discovered by our method
+*Sorted*
+
+![Imagenet validation images with clusters sorted by imagenet purity](https://www.robots.ox.ac.uk/~vgg/research/self-label/asset/sorted-clusters.png)
+
+*Random*
+
+![Imagenet validation images with random clusters](https://www.robots.ox.ac.uk/~vgg/research/self-label/asset/random-clusters.png)
+
+The edge-colors encode the true imagenet classes (which are not used for training).
+You can view all clusters [here](http://www.robots.ox.ac.uk/~vgg/blog/self-labelling-via-simultaneous-clustering-and-representation-learning.html).
 
 ## Requirements
 * Python >3.6
