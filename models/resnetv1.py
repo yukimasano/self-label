@@ -218,3 +218,8 @@ def resnet(out=[1000]):
 def resnet18(out=[1000]):
     """Encoder for instance discrimination and MoCo"""
     return resnet18(num_classes=out)
+
+if __name__ == '__main__':
+    import torch
+    model = resnet50(num_classes=[500]*3)
+    print([ k.shape for k in model(torch.randn(64,3,224,224))])

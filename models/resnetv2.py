@@ -94,18 +94,8 @@ def resnetv2(nlayers=50, num_classes=[1000], expansion=1):
     else:
         raise NotImplementedError
 
-def test():
-    net = resnetv2(nlayers=50, num_classes=[3000] * 5, expansion=4)
-    os.environ["CUDA_VISIBLE_DEVICES"] = "3"
-    print('done')
 
-    print(sum(p.numel() for p in net.parameters() if p.requires_grad)/1e6)
-    net.cuda()
-    y = net((torch.randn(1,3,224,224)).cuda())
-    print(y[0].shape, y[1].shape)
-    net.headcount = 1
-    y = net((torch.randn(1, 3, 224, 224)).cuda())
-    print(y.shape)
-
-if __name__  == "__main__":
-    test()
+if __name__ == '__main__':
+    import torch
+    model = resnetv2(num_classes=[500]*3)
+    print([ k.shape for k in model(torch.randn(64,3,224,224))])

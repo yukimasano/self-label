@@ -83,3 +83,8 @@ def alexnet(bn=True, num_classes=[1000], init=True, size='big'):
     dim = 3
     model = AlexNet(make_layers_features(CFG[size], dim, bn=bn), num_classes, init)
     return model
+
+if __name__ == '__main__':
+    import torch
+    model = alexnet(num_classes=[500]*3)
+    print([ k.shape for k in model(torch.randn(64,3,224,224))])
