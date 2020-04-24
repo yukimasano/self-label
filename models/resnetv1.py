@@ -1,8 +1,5 @@
-import torch
 import torch.nn as nn
 import math
-import numpy as np
-import torch.utils.model_zoo as model_zoo
 
 __all__ = ['resnet','resnet18']
 
@@ -113,7 +110,7 @@ class ResNet(nn.Module):
                             nn.AvgPool2d(7, stride=1),
         ])
         if len(num_classes) == 1:
-            self.top_layer = nn.Linear(512*4, num_classes[0])
+            self.top_layer = nn.Sequential(nn.Linear(512*4, num_classes[0]))
         else:
             for a, i in enumerate(num_classes):
                 setattr(self, "top_layer%d" % a, nn.Linear(512*4, i))
@@ -164,8 +161,6 @@ def resnet18(pretrained=False, **kwargs):
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
     model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
-    if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet18']))
     return model
 
 
@@ -175,8 +170,6 @@ def resnet34(pretrained=False, **kwargs):
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
     model = ResNet(BasicBlock, [3, 4, 6, 3], **kwargs)
-    if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet34']))
     return model
 
 
@@ -195,21 +188,7 @@ def resnet101(pretrained=False, **kwargs):
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
     model = ResNet(Bottleneck, [3, 4, 23, 3], **kwargs)
-    if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet101']))
     return model
-
-
-def resnet152(pretrained=False, **kwargs):
-    """Constructs a ResNet-152 model.
-    Args:
-        pretrained (bool): If True, returns a model pre-trained on ImageNet
-    """
-    model = ResNet(Bottleneck, [3, 8, 36, 3], **kwargs)
-    if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet152']))
-    return model
-
 
 def resnet(out=[1000]):
     """Encoder for instance discrimination and MoCo"""

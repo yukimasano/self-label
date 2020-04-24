@@ -56,7 +56,7 @@ class PreActResNet(nn.Module):
         ])
         self.headcount = len(num_classes)
         if len(num_classes) == 1:
-            self.top_layer = nn.Sequential([nn.Linear(512*expansion, num_classes[0])]) # for later compatib.
+            self.top_layer = nn.Sequential(*[nn.Linear(512*expansion, num_classes[0])]) # for later compatib.
         else:
             for a,i in enumerate(num_classes):
                 setattr(self, "top_layer%d" % a, nn.Linear(512*expansion, i))
