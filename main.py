@@ -55,6 +55,7 @@ class Optimizer:
         if not args.cpu and torch.cuda.device_count() > 1:
             sk.gpu_sk(self)
         else:
+            self.dtype = np.float64
             sk.cpu_sk(self)
 
         # save Label-assignments: optional
@@ -168,7 +169,6 @@ class Optimizer:
         print(f"optimization completed. Saving model to {os.path.join(self.checkpoint_dir,'model_final.pth.tar')}")
         torch.save(self.model, os.path.join(self.checkpoint_dir, 'model_final.pth.tar'))
         return self.model
-
 
 
 
