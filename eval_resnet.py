@@ -2,36 +2,17 @@ import os
 import time
 import argparse
 import warnings
-from PIL import ImageFile
 
 import torch
 import torch.nn as nn
 from tensorboardX import SummaryWriter
-# from torch.utils.tensorboard import SummaryWriter
 
-
-import models
 import util
 import files
 import data
 from util import TotalAverage, MovingAverage, accuracy
 
 warnings.simplefilter("ignore", UserWarning)
-
-class CRELU(nn.Module):
-    def __init__(self, in_planes, planes,p=0.05):
-        super(CRELU, self).__init__()
-        withbias = True
-        self.bn = nn.BatchNorm1d(in_planes, affine=False)
-        self.relu = nn.ReLU(inplace=False)
-        self.do = nn.Dropout(p) if p != 0. else nn.Sequential()
-        self.linear = nn.Linear(in_planes * 2, planes, bias=withbias)
-
-    def forward(self, x):
-        out = self.bn(x)
-        out = torch.cat([self.relu(out), self.relu(-out)], dim=1)
-        out = self.linear(self.do(out))
-        return out
 
 class StandardOptimizer():
     def __init__(self, weight_decay=1e-4):

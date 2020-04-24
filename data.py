@@ -80,13 +80,13 @@ def get_aug_dataloader(image_dir, is_validation=False,
 
 def return_model_loader(args, return_loader=True):
     outs = [args.ncl]*args.hc
-    assert args.arch in ['alexnet','resnetv2','resnet']
+    assert args.arch in ['alexnet','resnetv2','resnetv1']
     if args.arch == 'alexnet':
         model = models.__dict__[args.arch](num_classes=outs)
     elif args.arch == 'resnetv2':  # resnet
-        model = models.__dict__[args.arch](nlayers=50, num_classes=outs, expansion=1)
+        model = models.__dict__[args.arch](num_classes=outs, nlayers=50, expansion=1)
     else:
-        torchvision.models.__dict__[args.arch](num_classes=outs)
+        model = models.__dict__[args.arch](num_classes=outs)
     if not return_loader:
         return model
     train_loader = get_aug_dataloader(image_dir=args.imagenet_path,
@@ -95,7 +95,6 @@ def return_model_loader(args, return_loader=True):
                                       augs=int(args.augs))
 
     return model, train_loader
-
 
 def get_standard_data_loader(image_dir, is_validation=False,
                              batch_size=192, image_size=256, crop_size=224,

@@ -1,7 +1,7 @@
 import torch.nn as nn
 import math
 
-__all__ = ['resnet','resnet18']
+__all__ = ['resnetv1','resnetv1_18']
 
 def conv3x3(in_planes, out_planes, stride=1):
     """3x3 convolution with padding"""
@@ -181,7 +181,6 @@ def resnet50(pretrained=False, **kwargs):
     model = ResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
     return model
 
-
 def resnet101(pretrained=False, **kwargs):
     """Constructs a ResNet-101 model.
     Args:
@@ -190,15 +189,15 @@ def resnet101(pretrained=False, **kwargs):
     model = ResNet(Bottleneck, [3, 4, 23, 3], **kwargs)
     return model
 
-def resnet(out=[1000]):
+def resnetv1(num_classes=[1000]):
     """Encoder for instance discrimination and MoCo"""
-    return resnet50(num_classes=out)
+    return resnet50(num_classes=num_classes)
 
-def resnet18(out=[1000]):
+def resnetv1_18(num_classes=[1000]):
     """Encoder for instance discrimination and MoCo"""
-    return resnet18(num_classes=out)
+    return resnet18(num_classes=num_classes)
 
 if __name__ == '__main__':
     import torch
-    model = resnet50(num_classes=[500]*3)
+    model = resnetv1(num_classes=[500]*3)
     print([ k.shape for k in model(torch.randn(64,3,224,224))])
