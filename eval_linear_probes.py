@@ -217,9 +217,9 @@ class LinearProbesOptimizer():
             if args.data in ['Imagenet','Places'] and is_validation and args.tencrops:
                 bs, ncrops, c, h, w = input.size()
                 input_tensor = input.view(-1, c, h, w)
-                input = torch.autograd.Variable(input_tensor.cuda())
+                input = input_tensor.cuda()
             else:
-                input = torch.autograd.Variable(input.cuda())
+                input = input.cuda()
 
             predictions = model(input)
             if args.data in ['Imagenet','Places']  and is_validation and args.tencrops:
