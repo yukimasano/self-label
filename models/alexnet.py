@@ -34,9 +34,9 @@ class AlexNet(nn.Module):
     def forward(self, x):
         x = self.features(x)
         x = x.view(x.size(0), 256 * 6 * 6)
-        if self.return_features:
-            return x
         x = self.classifier(x)
+        if self.return_features: # switch only used for CIFAR-experiments
+            return x
         if self.headcount == 1:
             if self.top_layer: # this way headcount can act as switch.
                 x = self.top_layer(x)
