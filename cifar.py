@@ -31,7 +31,7 @@ def feature_return_switch(model, bool=True):
         model.headcount = 1
     else:
         model.headcount = args.hc
-    model.return_feature = bool
+    model.return_features = bool
 
 
 def optimize_L_sk(PS):
