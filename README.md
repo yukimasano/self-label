@@ -55,7 +55,7 @@ Full documentation of the unsupervised training code `main.py`:
 ```
 usage: main.py [-h] [--epochs EPOCHS] [--batch-size BATCH_SIZE] [--lr LR]
                [--lrdrop LRDROP] [--wd WD] [--dtype {f64,f32}] [--nopts NOPTS]
-               [--augs AUGS] [--paugs PAUGS] [--lamb LAMB] [--cpu]
+               [--augs AUGS] [--lamb LAMB] [--cpu]
                [--arch ARCH] [--archspec {big,small}] [--ncl NCL] [--hc HC]
                [--device DEVICE] [--modeldevice MODELDEVICE] [--exp EXP]
                [--workers WORKERS] [--imagenet-path IMAGENET_PATH]
@@ -74,7 +74,6 @@ optional arguments:
   --dtype {f64,f32}     SK-algo dtype (default: f64)
   --nopts NOPTS         number of pseudo-opts (default: 100)
   --augs AUGS           augmentation level (default: 3)
-  --paugs PAUGS         for pseudoopt: augmentation level (default: 3)
   --lamb LAMB           for pseudoopt: lambda (default:25)
   --cpu                 use CPU variant (slow) (default: off)
   --arch ARCH           alexnet or resnet (default: alexnet)
