@@ -13,12 +13,11 @@ WORKERS=24
 bs=256
 nepochs=400
 augs=3
-paugs=3
 
 # the pseudo opt
 nopts=100
 
-folder=pseudo${ncl}_${ARCH}_bs${bs}_hc${hc}-${nepochs}_nopt${nopts}_augT${augs}_augP${paugs}
+folder=pseudo${ncl}_${ARCH}_bs${bs}_hc${hc}-${nepochs}_nopt${nopts}_augT${augs}
 
 EXP=./${folder}
 mkdir -p ${EXP}/checkpoints/L
@@ -30,7 +29,6 @@ python3 main.py \
         --exp ${EXP} \
         --batch-size ${bs} \
         --augs ${augs} \
-        --paugs ${paugs} \
         --epochs ${nepochs} \
         --nopts ${nopts} \
         --hc ${hc} \
