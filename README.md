@@ -41,7 +41,7 @@ and ResNet-50 on SVHN, CIFAR-10, CIFAR-100 and ImageNet.
 | (Aug++ MoCo-v2**)      | 75.4   | 39.6    | 15.8   | 71.1       |               |
 
 * "Aug++" refers to the better augmentations used in SimCLR, taken from the [MoCo-v2 repo](https://github.com/facebookresearch/moco/blob/master/main_moco.py#L225), but I still only trained for 280 epochs, with two lr-drops as in CMC.
-* There are still further improvements to be made with a MLP or training 800 epochs (I train 280), as done in SimCLR, MoCov2 and SwAV.
+* There are still further improvements to be made with a MLP or training 800 epochs (I train 280), as done in SimCLR, [MoCov2](https://github.com/facebookresearch/moco) and [SwAV](https://github.com/facebookresearch/swav).
 * **MoCo-v2 uses 800 epochs, MLP and cos-lr-schedule. On MoCo-v2 I run k-means to on the avg-pooled features (after the MLP-head it's pretty much same performance) to obtain NMI, aNMI and ARI numbers.
 * Models above use standard torchvision ResNet backbones so loading is now super easy:
 ```
