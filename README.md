@@ -1,12 +1,14 @@
 # Self-labelling via simultaneous clustering and representation learning
 
-🆕✅🎉 _updated code: 23rd April: bug fixes + CIFAR code + evaluation for resnet & alexnet._
+🆗🆗🎉 _NEW models (20th August 2020): Added standard SeLa pretrained torchvision ResNet models to make loading much easier + added baselines using better MoCov2 augmentation (~69% LP performance) + added evaluation with K=1000 for ImageNet "unuspervised clustering"_
+
+🆕✅🎉 _updated code: 23rd April 2020: bug fixes + CIFAR code + evaluation for resnet & alexnet._
 
 Checkout our [blogpost](http://www.robots.ox.ac.uk/~vgg/blog/self-labelling-via-simultaneous-clustering-and-representation-learning.html) for a quick non-technical overview and an interactive visualization of our clusters.
 
 ## Self-Label
 
-This code is the official implementation of the ICLR 2020 paper [Self-labelling via simultaneous clustering and representation learning](https://openreview.net/forum?id=Hyx-jyBFPr). 
+This code is the official implementation of the ICLR 2020 paper [Self-labelling via simultaneous clustering and representation learning](https://openreview.net/forum?id=Hyx-jyBFPr).
 
 ### Abstract
 Combining clustering and representation learning is one of the most promising
@@ -21,7 +23,36 @@ so as to train highly competitive image representations without manual labels. O
 method achieves state of the art representation learning performance for AlexNet
 and ResNet-50 on SVHN, CIFAR-10, CIFAR-100 and ImageNet.
 
-## clusters that were discovered by our method
+### Results at a glance
+
+|                     | NMI(%) | aNMI(%) | ARI(%) | LP Acc (%) | 
+|---------------------|--------|---------|--------|------------|
+| AlexNet 1k          | 50.5   | 12.2    | 2.7    | 42.1       |  
+| AlexNet 10k         | 66.4   | 4.7     | 4.7    | 43.8       |  
+| R50 10x3k           | 54.2   | 34.4    | 7.2    | 61.5       |  
+
+#### With better augmentations
+
+|                      | NMI(%) | aNMI(%) | ARI(%) | LP Acc (%) | model_weights |
+|----------------------|--------|---------|--------|------------|---------------|
+| Aug++ R18  1k (new)  | 62.7   | 36.4    | 12.5   | 53.3       | [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/new_models/resnet18-1k_pp.pth) |
+| Aug++ R50  1k (new)  | 65.7   | 42.0    | 16.2   | 63.5       | [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/new_models/resnet50-1k_pp.pth) |
+| Aug++ R50 10x3k (new)| 75.7   | 52.8    | 27.6   | 68.8       | [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/new_models/resnet50-10x3k_pp.pth) |
+| Aug++ MoCo-v2**      | 75.4   | 39.6    | 15.8   | 71.1       |               |
+
+* "Aug++" refers to the better augmentations used in SimCLR, taken from the [MoCo-v2 repo](https://github.com/facebookresearch/moco/blob/master/main_moco.py#L225), but I still only trained for 280 epochs, with two lr-drops as in CMC.
+* There are still further improvements to be made with a MLP or training 800 epochs (I train 280), as done in SimCLR, MoCov2 and SwAV.
+* **MoCo-v2 uses 800 epochs, MLP and cos-lr-schedule. On MoCo-v2 I run k-means to on the avg-pooled features (after the MLP-head it's pretty much same performance) to obtain NMI, aNMI and ARI numbers.
+* Models above use standard torchvision ResNet backbones so loading is now super easy:
+```
+import torch, torchvision
+model = torchvision.models.resnet50(pretrained=False, num_classes=3000)
+ckpt = torch.load('resnet50-10x3k_pp.pth')
+model.load_state_dict(ckpt['state_dict'])
+pseudolabels = ckpt['L']
+```
+
+## Clusters that were discovered by our method
 *Sorted*
 
 ![Imagenet validation images with clusters sorted by imagenet purity](https://www.robots.ox.ac.uk/~vgg/research/self-label/asset/sorted-clusters.png)
@@ -45,7 +76,7 @@ Run the self-supervised training of an AlexNet with the command
 ```
 $./scripts/alexnet.sh
 ```
-or train a ResNet-50 with 
+or train a ResNet-50 with
 ```
 $./scripts/resnet.sh
 ```
@@ -55,7 +86,7 @@ Full documentation of the unsupervised training code `main.py`:
 ```
 usage: main.py [-h] [--epochs EPOCHS] [--batch-size BATCH_SIZE] [--lr LR]
                [--lrdrop LRDROP] [--wd WD] [--dtype {f64,f32}] [--nopts NOPTS]
-               [--augs AUGS] [--lamb LAMB] [--cpu]
+               [--augs AUGS] [--paugs PAUGS] [--lamb LAMB] [--cpu]
                [--arch ARCH] [--archspec {big,small}] [--ncl NCL] [--hc HC]
                [--device DEVICE] [--modeldevice MODELDEVICE] [--exp EXP]
                [--workers WORKERS] [--imagenet-path IMAGENET_PATH]
@@ -74,6 +105,7 @@ optional arguments:
   --dtype {f64,f32}     SK-algo dtype (default: f64)
   --nopts NOPTS         number of pseudo-opts (default: 100)
   --augs AUGS           augmentation level (default: 3)
+  --paugs PAUGS         for pseudoopt: augmentation level (default: 3)
   --lamb LAMB           for pseudoopt: lambda (default:25)
   --cpu                 use CPU variant (slow) (default: off)
   --arch ARCH           alexnet or resnet (default: alexnet)
@@ -95,7 +127,7 @@ optional arguments:
 
 ## Evaluation
 ### Linear Evaluation
-We provide the linear evaluation methods in this repo. 
+We provide the linear evaluation methods in this repo.
 Simply download the models via `. ./scripts/download_models.sh` and then either run `scripts/eval-alexnet.sh` or `scripts/eval-resnet.sh`.
 
 ### Pascal VOC
@@ -106,15 +138,15 @@ We follow the standard evaluation protocols for self-supervised visual represent
 based on the [Faster RCNN](https://github.com/rbgirshick/py-faster-rcnn). Note: requires the Caffe framework
 
 ## Our extracted pseudolabels
-As we show in the paper, the pseudolabels we generate from our training can be used to quickly train a neural network with regular cross-entropy. 
+As we show in the paper, the pseudolabels we generate from our training can be used to quickly train a neural network with regular cross-entropy.
 Moreover they seem to correctly group together similar images. Hence we provide the labels for everyone to use.
 ### AlexNet
-You can download the pseudolabels from our best (raw) AlexNet model with 10x3000 clusters [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/alexnet-labels.csv). 
+You can download the pseudolabels from our best (raw) AlexNet model with 10x3000 clusters [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/alexnet-labels.csv).
 ### ResNet
-You can download the pseudolabels from our best ResNet model with 10x3000 clusters [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/resnet-labels.csv). 
+You can download the pseudolabels from our best ResNet model with 10x3000 clusters [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/resnet-labels.csv).
 
 ## Trained models
-You can also download our trained models by running 
+You can also download our trained models by running
 ```
 $./scripts/download_models.sh
 ```
