@@ -38,7 +38,7 @@ and ResNet-50 on SVHN, CIFAR-10, CIFAR-100 and ImageNet.
 | Aug++ R18  1k (new)  | 62.7   | 36.4    | 12.5   | 53.3       | [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/new_models/resnet18-1k_pp.pth) |
 | Aug++ R50  1k (new)  | 65.7   | 42.0    | 16.2   | 63.5       | [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/new_models/resnet50-1k_pp.pth) |
 | Aug++ R50 10x3k (new)| 75.7   | 52.8    | 27.6   | 68.8       | [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/new_models/resnet50-10x3k_pp.pth) |
-| (Aug++ MoCo-v2**)      | 75.4   | 39.6    | 15.8   | 71.1       |               |
+|(MoCo-v2 + k-means**)      | 75.4   | 39.6    | 15.8   | 71.1       |               |
 
 * "Aug++" refers to the better augmentations used in SimCLR, taken from the [MoCo-v2 repo](https://github.com/facebookresearch/moco/blob/master/main_moco.py#L225), but I still only trained for 280 epochs, with three lr-drops as in [CMC](https://github.com/HobbitLong/CMC/blob/master/train_CMC.py#L50).
 * There are still further improvements to be made with a MLP or training 800 epochs (I train 280), as done in SimCLR, [MoCov2](https://github.com/facebookresearch/moco) and [SwAV](https://github.com/facebookresearch/swav).
