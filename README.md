@@ -31,13 +31,13 @@ and ResNet-50 on SVHN, CIFAR-10, CIFAR-100 and ImageNet.
 | AlexNet 10k         | 66.4   | 4.7     | 4.7    | 43.8       |  
 | R50 10x3k           | 54.2   | 34.4    | 7.2    | 61.5       |  
 
-#### With better augmentations
+#### With better augmentations (all single crop)
 
-|                      | NMI(%) | aNMI(%) | ARI(%) | LP Acc (%) | model_weights |
-|----------------------|--------|---------|--------|------------|---------------|
-| Aug++ R18  1k (new)  | 62.7   | 36.4    | 12.5   | 53.3       | [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/new_models/resnet18-1k_pp.pth) |
-| Aug++ R50  1k (new)  | 65.7   | 42.0    | 16.2   | 63.5       | [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/new_models/resnet50-1k_pp.pth) |
-| Aug++ R50 10x3k (new)| 75.7   | 52.8    | 27.6   | 68.8       | [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/new_models/resnet50-10x3k_pp.pth) |
+|                      | Acc  | NMI(%) | aNMI(%) | ARI(%) | LP Acc (%) | model_weights |
+|----------------------|------|--------|---------|--------|------------|---------------|
+| Aug++ R18  1k (new)  | 26.9 | 62.7   | 36.4    | 12.5   | 53.3       | [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/new_models/resnet18-1k_pp.pth) |
+| Aug++ R50  1k (new)  | 30.5 | 65.7   | 42.0    | 16.2   | 63.5       | [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/new_models/resnet50-1k_pp.pth) |
+| Aug++ R50 10x3k (new)| 38.1 |75.7   | 52.8    | 27.6   | 68.8       | [here](http://www.robots.ox.ac.uk/~vgg/research/self-label/asset/new_models/resnet50-10x3k_pp.pth) |
 |(MoCo-v2 + k-means**)      | 75.4   | 39.6    | 15.8   | 71.1       |               |
 
 * "Aug++" refers to the better augmentations used in SimCLR, taken from the [MoCo-v2 repo](https://github.com/facebookresearch/moco/blob/master/main_moco.py#L225), but I still only trained for 280 epochs, with three lr-drops as in [CMC](https://github.com/HobbitLong/CMC/blob/master/train_CMC.py#L50).
