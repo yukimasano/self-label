@@ -70,6 +70,7 @@ You can view all clusters [here](http://www.robots.ox.ac.uk/~vgg/blog/self-label
 * PyTorch > 1.0
 * CUDA
 * Numpy, SciPy
+* also, see requirements.txt
 * (optional:) TensorboardX
 
 ## Running our code
