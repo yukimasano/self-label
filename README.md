@@ -175,7 +175,7 @@ Yuki M. Asano, Christian Rupprecht and Andrea Vedaldi.  "Self-labelling via simu
 ```
 @inproceedings{asano2020self,
   title={Self-labelling via simultaneous clustering and representation learning},
-  author={Asano YM. and Rupprecht C. and Vedaldi A.},
+  author={Asano, Yuki M. and Rupprecht, Christian and Vedaldi, Andrea},
   booktitle={International Conference on Learning Representations (ICLR)},
   year={2020},
 }
