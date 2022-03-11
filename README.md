@@ -49,7 +49,7 @@ import torch, torchvision
 model = torchvision.models.resnet50(pretrained=False, num_classes=3000)
 ckpt = torch.load('resnet50-10x3k_pp.pth')
 model.load_state_dict(ckpt['state_dict'])
-pseudolabels = ckpt['L']
+pseudolabels = ckpt['labels']
 ```
 * note on improvement potential: by just using "aug+": I get LP-accuracy of 67.2% after 200 epochs. MoCo-v2 with "aug+" only has 63.4% after 200 epochs.
 
