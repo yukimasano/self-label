@@ -33,7 +33,7 @@ class Optimizer:
         self.checkpoint_dir = ckpt_dir
 
         self.resume = True
-        self.checkpoint_dir = None
+#         self.checkpoint_dir = None
         self.writer = None
 
         # model stuff
