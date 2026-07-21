@@ -27,7 +27,7 @@ def aggreg_multi_gpu(model, dataloader, hc, dim, TYPE=torch.float64, model_gpus=
     PS = [torch.empty(points_per_gpu, dim,
                       device='cuda:' + str(i), dtype=TYPE)
           for i in range(model_gpus, model_gpus + ngpu_store-1)]
-    # accomodate remainder
+    # accommodate remainder
     PS.append(torch.empty(len(dataloader.dataset) - (ngpu_store-1)*points_per_gpu,
                           dim, device='cuda:' + str(model_gpus + ngpu_store - 1), dtype=TYPE))
 
